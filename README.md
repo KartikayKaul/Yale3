@@ -1,30 +1,31 @@
 # Yale3
  Updated and simplified version of Rekrut (Linkedin scraper for extracting profile data)
 
-Yal§ or Yale3 (pronounced as Yal-crow) is a simplified version of [Rekrut](https://github.com/DrakenWan/Rekrut). Just enable developer mode in your `chrome://extensions` tab and click on `load unpacked` button and browse to the cloned folder. Run it on linkedin website profiles. Raw JSON profile data will be displayed on a sidebar that will appear when you click on the extension icon. Remember to scroll down slowly and click on all ["show more"](#) buttons if any to correctly extract data.
+Yal§ or Yale3 (pronounced as Yal-crow) is a simplified version of [Rekrut](https://github.com/DrakenWan/Rekrut). Just enable developer mode in your `chrome://extensions` tab and click on `load unpacked` button and browse to the cloned folder. Run it on linkedin website profiles. Raw JSON profile data will be displayed on a sidebar that will appear when you click on the extension icon.
 
-I have added a `Save PDF` option feature which is already a linkedin feature. Just able to access that feature in the extension's slider menu.
+ Remember to scroll down slowly and click on all ["show more"](#) buttons, if any, to correctly extract data.
+
+ All update logs to the code/logic of the extension can be seen in the [Updates](#update-timeline) section.
+
 
 You are free to do anything with the code on the repo. Read the [license](https://github.com/DrakenWan/Yale3/blob/main/LICENSE)
 
+## What is Deepscan?
+
+Deepscan feature is disabled for now. Working on improving this feature.
 
 ## Extraction
 
-This section has not been updated and tested in last 5 months. Basic data would still scrape absolutely but may not be clean.
+Below table shows what can be extracted and if the data is clean
 
-Section Name       |      Can Extract?      | Clean?              | Deepscan Extraction?
+Section Name       |      Can Extract?      | Clean?              | Deepscan Extraction? (**disabled**)
 :----------------- | :-----------------     | :-----------------  | :------------------
-*profile data*    |     :heavy_check_mark: | :heavy_check_mark:   |  :heavy_check_mark:
-*experience section*|     :heavy_check_mark: | :heavy_check_mark: |  :x:
-*education section*|     :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
-*certifications* |     :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
-*volunteer experience*|     :x: | :x: | :x:
-*skills section*  |     :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
-*accomplishments* |     :x: | :x:  | :x:
+*basic profile data*    |     :heavy_check_mark: | :x:   |  :x:
+*experience section*|     :heavy_check_mark: | :x: |  :x:
+*education section*|     :heavy_check_mark: | :x: | :x:
+*certifications* |     :x: | :x: | :x:
+*skills section*  |     :x: | :x: | :x:
 
-## What is Deepscan?
-
-It is nothing but a fancy term for the functionality to scrape more data as the linkedin limits the list of content shown for each section in the profile (on average max of 3 items in a list). So you have to press on show more. This takes you to a next "DOM object" that covers entire window with full list of items in a section. So for this you have to checkmark the "deepscan" checkbox button and then as usual press on "extract <section name>" button to get the full list of items. If you are doing the scraping on profile page for same section. Do not forget to uncheck it.
 
 ## Bug reporting
 I strive to make the code as general as possible but the extractor tool may not be perfect. If you find any bug on any profile please let me know in [issues](https://github.com/DrakenWan/Yale3/issues) section.
@@ -33,6 +34,16 @@ Note**: If the chrome extension hangs due to some error or bug, go to `chrome://
 ## Update Timeline
 
 I will keep posting timed updates here. In future will shift these somewhere else if I have time
+
+#### Update(dated: 5th June 2025)
+- Overhauled entire code for scraping the data
+- Heavily modularized the extraction logic
+- Added selectors for extraction of data to improve validation checks using selectors object in [selectors.js](./scripts/selectors.js) file. Also helps to observe the changes in the DOM and CSS style changes with much ease
+- Changed CSS styles (it is bit better now :D). Manual extraction buttons are not needed.
+- Currently able to extract `basic profile data`, `experiences` and `education` section.
+- `Deepscan` feature is **disabled**. Working on a better method to get detailed data.
+- The data that comes out in the JSON objects are not exactly clean.
+
 
 #### Update(dated: 12th March, 2023)
 

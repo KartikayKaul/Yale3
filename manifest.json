@@ -1,36 +1,41 @@
 {
-    "name":"Yal§",
-    "version": "2.0.2",
     "manifest_version": 3,
+    "name": "Yal§",
+    "version": "2.2.0",
+    "description": "Simple LinkedIn Profile scraping extension",
     "icons": {
         "128": "Y.png"
-     },
-    "action" : {
+    },
+    "permissions": [
+        "storage",
+        "tabs",
+        "identity",
+        "downloads"
+    ],
+    "host_permissions": [
+        "https://www.linkedin.com/*"
+    ],
+    "background": {
+        "service_worker": "scripts/events.js"
+    },
+    "action": {
         "default_title": "yale3"
     },
-    
-    "background": {
-        "service_worker": "./scripts/events.js"
-    },
-    
     "content_scripts": [
         {
             "matches": ["https://*.linkedin.com/*"],
-            "css": ["./css/content.css"],
-            "js": ["./scripts/jquery-3.6.0.min.js","./scripts/content.js"]
+            "css": ["css/content.css"],
+            "js": [
+                "scripts/selectors.js",   
+                "scripts/content.js"
+            ], 
+            "type": "module"
         }
     ],
-
-    "permissions": [
-        "tabs",
-        "storage",
-        "activeTab"
-    ],
-
     "web_accessible_resources": [{
-        "resources": ["./views/slider.html", "./scripts/jquery-3.6.0.min.js"],
+        "resources": ["views/slider.html"],
         "matches": ["<all_urls>"]
     }],
 
-    "homepage_url": "https://github.com/drakenwan/"
+    "homepage_url": "https://github.com/KartikayKaul/Yale3"
 }

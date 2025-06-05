@@ -1,128 +1,138 @@
-#slider {
+#yale3_slider {
     position: fixed;
     z-index: 9000000000000000000;
     top: 0px;
     right: 0px;
-
-    background-color : cornflowerblue;
-    width : 0px;
+    background-color: cornflowerblue;
+    width: 0px;
     transition: 0.4s;
-
     height: 100vh; 
-    overflow-y : auto;
+    overflow-y: auto;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    font-family: 'Segoe UI', sans-serif;
 }
 
-
-/* Slider header, footer and body tags below */
-/* add css stylesheets for slider child elements below*/
-#sheader {
+/* Header */
+#yale3_slider #sheader {
     position: sticky;
     top: 0;
     padding: 20px;
     background-color: #052536;
-    text-align:center;
+    text-align: center;
     z-index: 5;
     box-shadow: 0 0 5px #052536;
 }
 
-#sheader > div > h1, #sfooter >  h2 {
+#yale3_slider #sheader > div > h1,
+#yale3_slider #sfooter > h2 {
     color: white !important;
+    margin: 0;
 }
 
-#sbodycontainer {
-    color: white;
-}
-
-#sfooter {
+/* Footer */
+#yale3_slider #sfooter {
     position: sticky;
     bottom: 0;
     background-color: #052536;
     text-align: center;
     z-index: 5;
+    padding: 10px 0;
     box-shadow: 0 0 10px #052536;
 }
 
-#extractBtn, #savepdf {
-    
-    border-radius: 4px;
-    background-color: #0077b5;
-    border: none;
-    color: #FFFFFF;
-    text-align: center;
-    font-size: 28px;
-    padding: 5px;
-    width: 200px;
-    transition: all 0.5s;
-    cursor: pointer;
-    margin: 5px;
-    opacity: 0.8;
-
-    /* positioning on window */
-    position: relative;
+/* Body content container */
+#yale3_slider #sbodycontainer {
+    background-color: #23395d;
+    color: white;
+    padding: 10px 20px;
+    border-top: 1px solid #2d4e7f;
 }
 
-#extractBtn:hover, #savepdf:hover {
-    background-color: #035b8a;
-    border-right: 2px solid grey;
-    border-bottom: 2px solid grey;
+/* Textareas */
+#yale3_slider textarea {
+    width: 100%;
+    margin: 8px 0;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #4d7dbf;
+    background-color: #f2f7fc;
+    resize: vertical;
+    font-size: 14px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #1c2e4a;
+    box-sizing: border-box;
 }
 
-/* The extract buttons inside of slider */
-.internal_button {
-    display: inline-block;
-    padding: 15px 25px;
-    font-size: 24px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    outline: none;
+#yale3_slider textarea:hover {
+    background-color: #e6eefb;
+    border-color: #1c90f3;
+}
+
+/* Buttons */
+#yale3_slider .internal_button,
+#yale3_slider #savepdf,
+#yale3_slider #deepscanToggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px auto;
+    width: 80%;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: 600;
     color: #fff;
     background-color: #0077b5;
     border: none;
-    border-radius: 15px;
-    box-shadow: 0 9px #999;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.2s;
+    text-align: center;
+    line-height: 1.2;
 }
 
-.internal_button:hover {background-color: #035b8a}
-
-.internal_button:active {
+#yale3_slider .internal_button:hover,
+#yale3_slider #savepdf:hover,
+#yale3_slider #deepscanToggle:hover {
     background-color: #035b8a;
-    box-shadow: 0 5px #666;
-    transform: translateY(4px);
-  }
+    transform: translateY(-1px);
+}
 
-.sticky_buttons {
+/* Toggle Button Container */
+#yale3_slider #deepscancontainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Sticky utility buttons (like "Clear Text?") */
+#yale3_slider .sticky_buttons {
     position: sticky;
+    top: 10px;
     display: block;
     font-size: 16px;
-    margin: 15px 25px 0px 15px;;
+    margin: 15px auto 0;
+    width: 80%;
 }
 
-#deepscan {
-    padding: 10px;
-    opacity: 100% !important;
+/* Misc */
+#yale3_slider hr {
+    border: 1px solid #6b88aa;
+    margin: 20px 0;
 }
 
-#deepscancontainer {
-    position: sticky !important;
-    z-index: 5;
-}
-
-#deepscanlabel {
+#yale3_slider span,
+#yale3_slider h2 {
     color: white;
-    padding: 15px;
-    border: 1px solid rgb(100, 237, 223);
 }
 
-textarea {
-    margin: 1px;
-    padding-right: 20px;
-    border: 2px solid black;
-    height: 250px !important;
-    
+#apptitle {
+    font-size: 36px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: white;
 }
-
-textarea:hover {
-    background-color: rgb(178, 197, 231);
-    border: 2px solid rgb(27, 15, 49);
+#apptitle_caption {
+    color: white;
+    font-size: 10px;
 }
