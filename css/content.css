@@ -136,3 +136,14 @@
     color: white;
     font-size: 10px;
 }
+
+
+/* animation for refresh icon */
+@keyframes rotateOnce {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#refresh_icon.spin-once {
+  animation: rotateOnce 2s ease-in-out;
+}

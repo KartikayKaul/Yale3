@@ -63,20 +63,31 @@ function loadSlider() {
 
                 // REFRESH PROFILE DATA
                 const refreshBtn = document.getElementById("refresh_profile_data_button");
-                if(refreshBtn) {
-                    refreshBtn.addEventListener("click", () => {
+                const refreshIcon = document.getElementById("refresh_icon");
+                if(refreshBtn && refreshIcon) {
+                    refreshBtn.addEventListener("click", async () => {
+                
+                        refreshIcon.classList.add("spin-once");
+                        refreshIcon.addEventListener("animationend", () => {
+                            refreshIcon.classList.remove("spin-once");
+                        }, {once: true}); 
+
+                        // existing refresh logic
                         basicProfileData = getBasicProfileSection();
                         expData = getExperienceSection();
                         eduData = getEducationSection();
-
+                        //inject into text fields
                         injectDataintoTextArea("basicprofile", basicProfileData);
                         injectDataintoTextArea("experiencetext", expData);
                         injectDataintoTextArea("educationtext", eduData);
                     });
                 }
-            }, 3000);//adjust delay here
+                // REFRESH PROFILE DATA ENDS //
 
-            // URL Watcher for Automatic Refresh every 1 second
+            }, 3000);//adjust delay here // TIMEOUT ENDS HERE //
+
+
+            // AUTOMATIC DATA REFRESHER LOGIC //
             let lastUrl = location.href;
             setInterval( () => {
                 if(location.href !== lastUrl) {
@@ -88,15 +99,20 @@ function loadSlider() {
                         injectDataintoTextArea("basicprofile", basicProfileData);
                         injectDataintoTextArea("experiencetext", expData);
                         injectDataintoTextArea("educationtext", eduData);
+                        lastUrl = location.href;
                     }, 3000); // Timeout set to let the page refresh first
                 }
             }, 1000); // Interval - check every 1 second
+            // AUTOMATIC DATA REFRESHER LOGIC ENDS //
+            
         // SLIDER WORK ENDS HERE  -------------- //
         }).catch(error => console.error("Error injecting `slider.html`: ", error));
-} // loadSlider function definition
+} // loadSlider function definition ends here
 
 loadSlider();
 
+
+// TOGGLE SLIDER LISTENER
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     if(msg.todo == "toggle") {
        toggleSlider(); 
@@ -104,7 +120,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
 });
 
 
-// Toggle function for sliderContainer
+// CSS STYLE CHANGE LOGIC ON TOGGLE TRIGGER
 function toggleSlider() {
     const slider = document.getElementById("yale3_slider");
     //if(!slider) return;
@@ -117,7 +133,7 @@ function toggleSlider() {
     }
 }
 
-// // deepscan listener
+// // deepscan listener - DISABLED RIGHT NOW
 // function setupDeepscanListener() {
 //     const deepscanBtn = document.getElementById("deepscan_toggle_button");
 //     if(deepscanBtn) {
@@ -170,9 +186,9 @@ function getBasicProfileSection() {
     for(const [key, isValid] of Object.entries(validationResults)) {
         if(isValid) {
             const element = document.querySelector(window.selectors.basicProfile[key]);
-            data[key] = element.textContent.trim();
+            data[key] = element?.textContent.trim();
         } else {
-            data[key] = null;
+            data[key] = "";
         }
     }
 
@@ -225,7 +241,7 @@ function getExperienceData(results) {
         const data = {};
         for (const [field, selector] of Object.entries(window.selectors.experience)) {
             const el = node.querySelector(selector);
-            data[field] = el ? el.textContent.trim() : null;
+            data[field] = el ? el.textContent.trim() : "";
         }
 
         items.push({key, data});
@@ -281,9 +297,9 @@ function getEducationData(results) {
         for (const [field, selector] of Object.entries(window.selectors.education)) {
             const el = node.querySelector(selector);
             if(field === "schoolUrl") {
-                data[field] = el ? el.getAttribute("href") : null;
+                data[field] = el ? el.getAttribute("href") : "";
             } else {
-                data[field] = el ? el.textContent.trim() : null;
+                data[field] = el ? el.textContent.trim() : "";
             }
         }
         items.push({key, data});
