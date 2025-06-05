@@ -34,35 +34,66 @@ function loadSlider() {
             //Simple delay (3 seconds) before running extraction // will change with an observer
             setTimeout( () => {
 
+                // ADD ANY CODE IN THIS BLOCK THAT DEPENDS ON THE LINKEDIN SITE DOM CHANGES
+
                 //basic profile data
-                const basicProfileData = getBasicProfileSection();
+                var basicProfileData = getBasicProfileSection();
                 //console.log(basicProfileData);
                 //experience section data
-                const expData = getExperienceSection();
+                var expData = getExperienceSection();
                 //console.log(expData);
                 //education section data
-                const eduData = getEducationSection();
+                var eduData = getEducationSection();
                 //console.log(eduData);
 
+                // INJECT INTO TEXT FIELDS
                 injectDataintoTextArea("basicprofile", basicProfileData);
                 injectDataintoTextArea("experiencetext", expData);
                 injectDataintoTextArea("educationtext", eduData);
 
 
-                // save the profile data listener
+                // SAVE PROFILE DATA LISTENER
                 const saveButton = document.getElementById("save_profile_data_button");
                 if(saveButton) {
                     saveButton.addEventListener("click", () => {
                         saveProfileData(basicProfileData, expData, eduData);
                     })
                 }
+                
 
+                // REFRESH PROFILE DATA
+                const refreshBtn = document.getElementById("refresh_profile_data_button");
+                if(refreshBtn) {
+                    refreshBtn.addEventListener("click", () => {
+                        basicProfileData = getBasicProfileSection();
+                        expData = getExperienceSection();
+                        eduData = getEducationSection();
+
+                        injectDataintoTextArea("basicprofile", basicProfileData);
+                        injectDataintoTextArea("experiencetext", expData);
+                        injectDataintoTextArea("educationtext", eduData);
+                    });
+                }
             }, 3000);//adjust delay here
-            
 
+            // URL Watcher for Automatic Refresh every 1 second
+            let lastUrl = location.href;
+            setInterval( () => {
+                if(location.href !== lastUrl) {
+                    setTimeout( () => {
+                        basicProfileData = getBasicProfileSection();
+                        expData = getExperienceSection();
+                        eduData = getEducationSection();
+
+                        injectDataintoTextArea("basicprofile", basicProfileData);
+                        injectDataintoTextArea("experiencetext", expData);
+                        injectDataintoTextArea("educationtext", eduData);
+                    }, 3000); // Timeout set to let the page refresh first
+                }
+            }, 1000); // Interval - check every 1 second
         // SLIDER WORK ENDS HERE  -------------- //
         }).catch(error => console.error("Error injecting `slider.html`: ", error));
-}
+} // loadSlider function definition
 
 loadSlider();
 
@@ -187,7 +218,8 @@ function getExperienceData(results) {
     const items = [];
     for (const [key, {node, result}] of Object.entries(results)) {
         // only process if all selectors are valid
-        const allValid = Object.values(result).every(Boolean);
+        const requiredFields = ['jobTitle', 'companyAndType', 'duration'];
+        const allValid = requiredFields.every(field => result[field]);
         if(!allValid) continue;
 
         const data = {};
@@ -240,7 +272,9 @@ function getEducationData(results) {
     const items = [];
     for (const [key, {node, result}] of Object.entries(results)) {
         // only process if all selectors are valid
-        const allValid = Object.values(result).every(Boolean);
+
+        const requiredFields = ['name', 'degree'];
+        const allValid = requiredFields.every(field => result[field]);
         if(!allValid) continue;
 
         const data = {};
@@ -291,5 +325,4 @@ function saveProfileData(basicData, expData, eduData) {
         filename,
         content: JSON.stringify(fullData, null, 2)
     });
-    
 }
