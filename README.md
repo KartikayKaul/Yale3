@@ -18,7 +18,7 @@ Below table shows what can be extracted and if the data is clean.
 
 Section Name       |      Can Extract?      | Clean?              | Deepscan Extraction? (**disabled**)
 :----------------- | :-----------------     | :-----------------  | :------------------
-*basic profile data*    |     :heavy_check_mark: | :x:   |  :x:
+*basic profile data*    |     :heavy_check_mark: | :heavy_check_mark:   |  :x:
 *experience section*|     :heavy_check_mark: | :x: |  :x:
 *education section*|     :heavy_check_mark: | :x: | :x:
 *certifications* |     :x: | :x: | :x:
