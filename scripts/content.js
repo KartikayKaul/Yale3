@@ -127,7 +127,7 @@ function toggleSlider() {
     const styler = slider.style;
 
     if (styler.width === "0px") {
-        styler.width = "400px";
+        styler.width = "450px";
     } else {
         styler.width = "0px";
     }
@@ -154,6 +154,10 @@ function toggleSlider() {
 function validateSelector(selectorGroup, baseNode=document) {
     const results = {};
     for( const [key, selector] of Object.entries(selectorGroup)) {
+        if (typeof selector !== "string") {
+            // skip nested objects like 'multiRole' in experience section of selectors
+            continue;
+        }
         const element = baseNode.querySelector(selector);
         results[key] = element ? true : false;
     }
@@ -175,7 +179,6 @@ function getSectionWithId(list, sectionId) {
     */
    return Array.from(list).find(sec => sec.children[0]?.id === sectionId) || null;
 }
-
 
 //get basicp profile data
 function getBasicProfileSection() {
@@ -200,54 +203,115 @@ function getBasicProfileSection() {
 function getExperienceSection() {
     const sections = getSectionsList();
     const expNode = getSectionWithId(sections, "experience");
-    if(expNode) { //check if expNode section exists or not
-        const ul = expNode.children[2]?.querySelector("div > ul") || null;
-        if(ul) {
-            allLi = Array.from(ul.querySelectorAll("li"));
-            topLi = allLi.filter(li => li.parentElement === ul); // getting all top level li
+    if (!expNode) return {};
 
-            // now we loop through topLi experience items
-            const validationResults = {};
-            
-            topLi.forEach((li, index) => {
-                const key = `li_${index}`;
-                const validation = validateSelector(window.selectors.experience, li);
-                validationResults[key] = {
-                    node: li,
-                    result: validation
+    const ul = expNode.children[2]?.querySelector("div > ul");
+    if (!ul) return {};
+
+    const allLi = Array.from(ul.querySelectorAll("li"));
+    const topLi = allLi.filter(li => li.parentElement === ul);
+
+    const validationResults = {};
+
+    topLi.forEach((li, index) => {
+        const key = `li_${index}`;
+        const nestedUL = li.querySelector("ul");
+        const nestedLIs = nestedUL ? Array.from(nestedUL.querySelectorAll(":scope > li")) : [];
+
+        const isMultiRole = nestedLIs.some(nestedLi =>
+            nestedLi.querySelector(window.selectors.experience.multiRole.subli.jobTitle)
+        );
+
+        if (isMultiRole) {
+            // Validate outer topLi with company-level multiRole selectors
+            const outerValidation = validateSelector(window.selectors.experience.multiRole, li);
+
+            // For each sub-role
+            nestedLIs.forEach((subLi, subIndex) => {
+                const subKey = `${key}_sub_${subIndex}`;
+                const subValidation = validateSelector(window.selectors.experience.multiRole.subli, subLi);
+
+                // Combine results as one structure
+                validationResults[subKey] = {
+                    node: subLi,
+                    parent: li, // needed for company-level data
+                    result: {
+                        outer: outerValidation,
+                        inner: subValidation
+                    },
+                    isMultiRole: true
                 };
             });
-            
-            return getExperienceData(validationResults);
-        } // if ul exists condn ends
-        else {
-            return {}; //return empty object
+        } else {
+            const validation = validateSelector(window.selectors.experience, li);
+
+            validationResults[key] = {
+                node: li,
+                result: validation,
+                isMultiRole: false
+            };
         }
-    } // if expNode exists condn ends
-    else {
-        return {}; //return empty object
-    }
+    });
+
+    return getExperienceData(validationResults);
 }
+
+
 
 // get EXPERIENCE SECTION data
 function getExperienceData(results) {
     const items = [];
-    for (const [key, {node, result}] of Object.entries(results)) {
-        // only process if all selectors are valid
-        const requiredFields = ['jobTitle', 'companyAndType', 'duration'];
-        const allValid = requiredFields.every(field => result[field]);
-        if(!allValid) continue;
 
+    for (const [key, { node, result, isMultiRole, parent }] of Object.entries(results)) {
         const data = {};
-        for (const [field, selector] of Object.entries(window.selectors.experience)) {
-            const el = node.querySelector(selector);
-            data[field] = el ? el.textContent.trim() : "";
+
+        if (isMultiRole) {
+            const { outer, inner } = result;
+
+            const outerRequired = ['companyName', 'location'];
+            const innerRequired = ['jobTitle', 'duration'];
+
+            const outerValid = outerRequired.every(f => outer[f]);
+            const innerValid = innerRequired.every(f => inner[f]);
+            if (!outerValid || !innerValid) continue;
+
+            // Extract company-level data
+            for (const [field, selector] of Object.entries(window.selectors.experience.multiRole)) {
+                if (field === "subli") continue;
+                if (typeof selector !== "string") continue;
+
+                const el = parent.querySelector(selector);
+                data[field] = el ? el.textContent.trim() : "";
+            }
+
+            // Extract role-level data
+            for (const [field, selector] of Object.entries(window.selectors.experience.multiRole.subli)) {
+                if (typeof selector !== "string") continue;
+
+                const el = node.querySelector(selector);
+                data[field] = el ? el.textContent.trim() : "";
+            }
+
+        } else {
+            const requiredFields = ['jobTitle', 'companyAndType', 'duration'];
+            const allValid = requiredFields.every(f => result[f]);
+            if (!allValid) continue;
+
+            for (const [field, selector] of Object.entries(window.selectors.experience)) {
+                if (typeof selector !== "string") continue;
+
+                const el = node.querySelector(selector);
+                data[field] = el ? el.textContent.trim() : "";
+            }
         }
 
-        items.push({key, data});
+        items.push({ key, data });
     }
+
     return items;
 }
+
+
 
 
 // get EDUCATION SECTION Node and also perform validations

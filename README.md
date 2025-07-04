@@ -14,7 +14,7 @@ Deepscan feature is disabled for now. Working on improving this feature.
 
 ## Extraction
 
-Below table shows what can be extracted and if the data is clean
+Below table shows what can be extracted and if the data is clean.
 
 Section Name       |      Can Extract?      | Clean?              | Deepscan Extraction? (**disabled**)
 :----------------- | :-----------------     | :-----------------  | :------------------
@@ -24,6 +24,68 @@ Section Name       |      Can Extract?      | Clean?              | Deepscan Ext
 *certifications* |     :x: | :x: | :x:
 *skills section*  |     :x: | :x: | :x:
 
+The data that is extracted is clean but some simple string methods can be used to split the text and get the relevant data. Below sample JSON object list will give an idea of what the output looks like:-
+```json
+[
+  {
+    "key": "li_0",
+    "data": {
+      "jobTitle": "Python Developer",
+      "companyAndType": "Tech Mahindra · Internship",
+      "duration": "Apr 2025 - Present · 4 mos",
+      "location": "Plano, Texas, United States · Remote"
+    }
+  },
+  {
+    "key": "li_1",
+    "data": {
+      "jobTitle": "Computer Programmer (Data and Automation)",
+      "companyAndType": "Pro-Tek Consulting · Full-time",
+      "duration": "Nov 2024 - May 2025 · 7 mos",
+      "location": "Woodland, California, United States · Hybrid"
+    }
+  },
+  {
+    "key": "li_2",
+    "data": {
+      "jobTitle": "Data Scientist",
+      "companyAndType": "Radiance Technologies · Internship",
+      "duration": "Aug 2024 - Oct 2024 · 3 mos",
+      "location": "Sheridan, Wyoming, United States · Remote"
+    }
+  },
+  {
+    "key": "li_3_sub_0",
+    "data": {
+      "companyName": "Zummit Infolabs",
+      "location": "Bengaluru, Karnataka, India · Remote",
+      "jobTitle": "Technical Lead",
+      "duration": "Feb 2022 - Jun 2022 · 5 mos"
+    }
+  },
+  {
+    "key": "li_3_sub_1",
+    "data": {
+      "companyName": "Zummit Infolabs",
+      "location": "Bengaluru, Karnataka, India · Remote",
+      "jobTitle": "Data Science Intern",
+      "duration": "Jan 2022 - Jun 2022 · 6 mos"
+    }
+  },
+  {
+    "key": "li_4",
+    "data": {
+      "jobTitle": "Software Development Intern",
+      "companyAndType": "Darwinbox · Internship",
+      "duration": "May 2019 - Jul 2019 · 3 mos",
+      "location": "Hyderabad, Telangana, India · On-site"
+    }
+  }
+]
+```
+
+This is the list of experiences scraped from my own linkedin profile page. You can clearly see that on some attributes we can perform splits using separators like `·`.
+
 
 ## Bug reporting
 I strive to make the code as general as possible but the extractor tool may not be perfect. If you find any bug on any profile please let me know in [issues](https://github.com/DrakenWan/Yale3/issues) section.
@@ -32,6 +94,10 @@ Note**: If the chrome extension hangs due to some error or bug, go to `chrome://
 ## Update Timeline
 
 I will keep posting timed updates here. In future will shift these somewhere else if I have time
+#### Update(dated: 4th July 2025)
+- Added logic to scrape the multi-role experiences properly. Earlier they were getting extracted into wrong attributes. The attributes for multi-role objects differ from single-role experience objects. One way to differentiate multi-role from single-role is to look at the `key` attribute for each object which, for instance, looks like `li_2_sub_0`, if `sub` substring is present in the `key` attribute's value then that means it is a multi-role entry in the list.
+- This data is not "clean" so that means you still need to perform some "trimming" and extra "data cleaning" steps after to get the exact data which can be done in two or three lines of code.
+- As of now, we can scrape, `basic profile data`, `education section` and `experience section`. Off to generate logic for `skills` and `certification` sections. 
 
 #### Update(dated: 5th June 2025)
 - Overhauled entire code for scraping the data
