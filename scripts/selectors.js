@@ -7,13 +7,22 @@ window.selectors = {
         name: "h1",
         headline: "div.text-body-medium.break-words",
         location: "span.text-body-small.inline.t-black--light.break-words",
-        about: "section[data-view-name='profile-card'] div.inline-show-more-text--is-collapsed > span[aria-hidden='true']"
+        about: "section[data-view-name='profile-card'] div.inline-show-more-text--is-collapsed > span[aria-hidden='true']",
+        photo_url: "div.pv-top-card__non-self-photo-wrapper img"
     },
     experience: {
         jobTitle: "div.t-bold span[aria-hidden='true']",
         companyAndType: "span.t-14.t-normal > span[aria-hidden='true']",
         duration: "span.pvs-entity__caption-wrapper[aria-hidden='true']",
         location: "span.t-14.t-normal.t-black--light:not(:has(.pvs-entity__caption-wrapper)) > span[aria-hidden='true']",
+        multiRole: {
+            companyName: "div > a.optional-action-target-wrapper span[aria-hidden='true']",
+            location: "span.t-14.t-normal.t-black--light > span[aria-hidden='true']",
+            subli: {
+                jobTitle: "div.t-bold span[aria-hidden='true']",
+                duration: "span.t-14.t-normal.t-black--light span[aria-hidden='true']"
+            }
+        }
     },
     education: {
         name: "span[aria-hidden='true']:first-of-type",

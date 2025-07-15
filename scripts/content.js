@@ -3,7 +3,6 @@
     and I tried all troubleshooting methods
     but was not able to trace why chrome was not 
     recognizing this file as a module.
-
     So instead of using imports I am just adding the
     files in the content_scripts array in manifest file
 */
@@ -106,7 +105,7 @@ function loadSlider() {
             // AUTOMATIC DATA REFRESHER LOGIC ENDS //
             
         // SLIDER WORK ENDS HERE  -------------- //
-        }).catch(error => console.error("Error injecting `slider.html`: ", error));
+        }).catch(error => console.error("Error injecting slider.html: ", error));
 } // loadSlider function definition ends here
 
 loadSlider();
@@ -150,7 +149,7 @@ function toggleSlider() {
 //     }
 // }
 
-// Validate the `selector` group from selectors object
+// Validate the selector group from selectors object
 function validateSelector(selectorGroup, baseNode=document) {
     const results = {};
     for( const [key, selector] of Object.entries(selectorGroup)) {
@@ -189,7 +188,11 @@ function getBasicProfileSection() {
     for(const [key, isValid] of Object.entries(validationResults)) {
         if(isValid) {
             const element = document.querySelector(window.selectors.basicProfile[key]);
-            data[key] = element?.textContent.trim();
+            if(element.tagName === "IMG") {
+                data[key] = element?.src || "";
+            } else { // else normal extraction
+                data[key] = element?.textContent.trim();
+            }
         } else {
             data[key] = "";
         }
@@ -371,11 +374,22 @@ function getEducationData(results) {
     return items;
 }
 
+// get Certifications SECTION
+function getCertificationSection() {
+    const sections = getSectionsList();
+    const certNode = getSectionWithId(sections, "licenses_and_certifications");
+
+    if(certNode) {//if certNode exists
+        
+    } 
+}
+
+
 // inject data into text boxes in the slider.html
 function injectDataintoTextArea(nodeId, data) {
     const textarea = document.getElementById(nodeId);
     if(!textarea) {
-        console.error('Text area node with id `${nodeId}` not found.');
+        console.error('Text area node with id ${nodeId} not found.');
         return;
     }
 
@@ -398,7 +412,7 @@ function saveProfileData(basicData, expData, eduData) {
 
     const name = basicData?.name?.replace(/\s+/g, "_") || window.location.href;
     const date = new Date().toISOString().split("T")[0];
-    const filename = `${name}_${date}.json`;
+    const filename =    `${name}_${date}.json`  ;
 
     chrome.runtime.sendMessage({
         type: "downloadProfile",
