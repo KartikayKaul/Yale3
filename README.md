@@ -3,6 +3,9 @@
 
 Yal§ or Yale3 (pronounced as Yal-crow) is a simplified version of [Rekrut](https://github.com/DrakenWan/Rekrut). Just enable developer mode in your `chrome://extensions` tab and click on `load unpacked` button and browse to the cloned folder. Run it on linkedin website profiles. Raw JSON profile data will be displayed on a sidebar that will appear when you click on the extension icon.
 
+
+Before ***saving profile data*** it's best recommended to click "Refresh Profile Data".
+
  All update logs to the code/logic of the extension can be seen in the [Updates](#update-timeline) section.
 
 
@@ -21,7 +24,7 @@ Section Name       |      Can Extract?      | Clean?              | Deepscan Ext
 *basic profile data*    |     :heavy_check_mark: | :heavy_check_mark:   |  :x:
 *experience section*|     :heavy_check_mark: | :x: |  :x:
 *education section*|     :heavy_check_mark: | :x: | :x:
-*certifications* |     :x: | :x: | :x:
+*certifications* |     :heavy_check_mark: | :x: | :x:
 *skills section*  |     :x: | :x: | :x:
 
 The data that is extracted is clean but some simple string methods can be used to split the text and get the relevant data. Below sample JSON object list will give an idea of what the output looks like:-
@@ -94,6 +97,9 @@ Note**: If the chrome extension hangs due to some error or bug, go to `chrome://
 ## Update Timeline
 
 I will keep posting timed updates here. In future will shift these somewhere else if I have time
+#### Update(dated: 16th July 2025)
+- Added logic to extract the certifications section
+- fixed a bug in last commit on saveProfileAPI
 #### Update(dated: 4th July 2025)
 - Added logic to scrape the multi-role experiences properly. Earlier they were getting extracted into wrong attributes. The attributes for multi-role objects differ from single-role experience objects. One way to differentiate multi-role from single-role is to look at the `key` attribute for each object which, for instance, looks like `li_2_sub_0`, if `sub` substring is present in the `key` attribute's value then that means it is a multi-role entry in the list.
 - This data is not "clean" so that means you still need to perform some "trimming" and extra "data cleaning" steps after to get the exact data which can be done in two or three lines of code.

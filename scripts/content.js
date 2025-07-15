@@ -44,18 +44,20 @@ function loadSlider() {
                 //education section data
                 var eduData = getEducationSection();
                 //console.log(eduData);
+                var certData = getCertificationSection();
+
 
                 // INJECT INTO TEXT FIELDS
                 injectDataintoTextArea("basicprofile", basicProfileData);
                 injectDataintoTextArea("experiencetext", expData);
                 injectDataintoTextArea("educationtext", eduData);
-
+                injectDataintoTextArea("certificationstext", certData);
 
                 // SAVE PROFILE DATA LISTENER
                 const saveButton = document.getElementById("save_profile_data_button");
                 if(saveButton) {
                     saveButton.addEventListener("click", () => {
-                        saveProfileData(basicProfileData, expData, eduData);
+                        saveProfileData(basicProfileData, expData, eduData, certData);
                     })
                 }
                 
@@ -75,10 +77,12 @@ function loadSlider() {
                         basicProfileData = getBasicProfileSection();
                         expData = getExperienceSection();
                         eduData = getEducationSection();
+                        certData = getCertificationSection();
                         //inject into text fields
                         injectDataintoTextArea("basicprofile", basicProfileData);
                         injectDataintoTextArea("experiencetext", expData);
                         injectDataintoTextArea("educationtext", eduData);
+                        injectDataintoTextArea("certificationstext", certData);
                     });
                 }
                 // REFRESH PROFILE DATA ENDS //
@@ -98,6 +102,7 @@ function loadSlider() {
                         injectDataintoTextArea("basicprofile", basicProfileData);
                         injectDataintoTextArea("experiencetext", expData);
                         injectDataintoTextArea("educationtext", eduData);
+                        injectDataintoTextArea("certificationstext", certData);
                         lastUrl = location.href;
                     }, 3000); // Timeout set to let the page refresh first
                 }
@@ -260,7 +265,6 @@ function getExperienceSection() {
 }
 
 
-
 // get EXPERIENCE SECTION data
 function getExperienceData(results) {
     const items = [];
@@ -313,7 +317,6 @@ function getExperienceData(results) {
 
     return items;
 }
-
 
 
 
@@ -374,15 +377,66 @@ function getEducationData(results) {
     return items;
 }
 
+
 // get Certifications SECTION
 function getCertificationSection() {
     const sections = getSectionsList();
     const certNode = getSectionWithId(sections, "licenses_and_certifications");
 
     if(certNode) {//if certNode exists
-        
-    } 
+       const ul = certNode.children[2]?.querySelector("ul") || null;
+        if(ul) {
+            allLi = Array.from(ul.querySelectorAll("li"));
+            topLi = allLi.filter(li => li.parentElement === ul); // getting all top level li
+
+            // we loop through topLi items and validate using selectors object
+            const validationResults = {};
+
+            topLi.forEach((li, index) => {
+                const key = `li_${index}`;
+                const validation = validateSelector(window.selectors.certifications, li);
+                validationResults[key] = {
+                    node: li,
+                    result: validation
+                };
+            });
+            
+            return getCertificationData(validationResults);
+        } // if ul exists condn ends 
+        else {
+            return {}; //return empty object if ul is null
+        }
+    } // if eduNode exists condn ends 
+    else {
+        return {}; //return empty object if eduNode is null
+    }
 }
+
+//get certifications Data
+function getCertificationData(results) {
+    const items = [];
+    for (const [key, {node, result}] of Object.entries(results)) {
+        // only process if all selectors are valid
+
+        const requiredFields = ['name', 'issuer'];
+        const allValid = requiredFields.every(field => result[field]);
+        if(!allValid) continue;
+
+        const data = {};
+        for (const [field, selector] of Object.entries(window.selectors.certifications)) {
+            const el = node.querySelector(selector);
+            if(field === "credential_url") {
+                data[field] = el ? el.getAttribute("href") : "";
+            } else {
+                data[field] = el ? el.textContent.trim() : "";
+            }
+        }
+        items.push({key, data});
+    }
+    return items;
+}
+
+
 
 
 // inject data into text boxes in the slider.html
@@ -399,14 +453,15 @@ function injectDataintoTextArea(nodeId, data) {
 }
 
 // save profile data extracted so far
-function saveProfileData(basicData, expData, eduData) {
+function saveProfileData(basicData, expData, eduData, certData) {
 
     const fullData = {
         id: window.location.href,
         savedDate: new Date().toISOString(),
         basicProfile: basicData,
         experience: expData,
-        education: eduData
+        education: eduData,
+        certification: certData
     };
 
 

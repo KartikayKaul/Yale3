@@ -30,5 +30,12 @@ window.selectors = {
         duration: ".t-14.t-normal.t-black--light span[aria-hidden='true']",
         grade: "div[dir='ltr'] > div[style*='-webkit-line-clamp'] span[aria-hidden='true']",
         schoolUrl: "a.optional-action-target-wrapper"
+    },
+    certifications: {
+        name: ".t-bold span[aria-hidden='true']",
+        issuer: "span.t-14.t-normal span[aria-hidden='true']",
+        validity_duration: ".t-black--light span",
+        credential_id : ".t-black--light + .t-black--light span",
+        credential_url: "div.pvs-entity__sub-components a", 
     }
 };
