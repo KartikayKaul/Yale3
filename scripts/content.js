@@ -53,14 +53,6 @@ function loadSlider() {
                 injectDataintoTextArea("experiencetext", expData);
                 injectDataintoTextArea("educationtext", eduData);
                 injectDataintoTextArea("certificationstext", certData);
-
-                // SAVE PROFILE DATA LISTENER
-                const saveButton = document.getElementById("save_profile_data_button");
-                if(saveButton) {
-                    saveButton.addEventListener("click", () => {
-                        saveProfileData(basicProfileData, expData, eduData, certData);
-                    })
-                }
                 
 
                 // REFRESH PROFILE DATA
@@ -108,11 +100,17 @@ function loadSlider() {
                         injectDataintoTextArea("educationtext", eduData);
                         injectDataintoTextArea("certificationstext", certData);
                         lastUrl = location.href;
-                    }, 3000); // Timeout set to let the page refresh first
+                    }, 1000); // Timeout set to let the page refresh first
                 }
-            }, 1000); // Interval - check every 1 second
+            }, 500); // Interval - check every 1 second
             // AUTOMATIC DATA REFRESHER LOGIC ENDS //
-            
+            // SAVE PROFILE DATA LISTENER
+                const saveButton = document.getElementById("save_profile_data_button");
+                if(saveButton) {
+                    saveButton.addEventListener("click", () => {
+                        saveProfileData(basicProfileData, expData, eduData, certData);
+                    })
+                }
         // SLIDER WORK ENDS HERE  -------------- //
         }).catch(error => console.error("Error injecting slider.html: ", error));
 } // loadSlider function definition ends here
