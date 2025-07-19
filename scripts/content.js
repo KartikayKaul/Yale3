@@ -48,6 +48,7 @@ function loadSlider() {
 
 
                 // INJECT INTO TEXT FIELDS
+                injectDataintoTextArea("name_title", basicProfileData.name);
                 injectDataintoTextArea("basicprofile", basicProfileData);
                 injectDataintoTextArea("experiencetext", expData);
                 injectDataintoTextArea("educationtext", eduData);
@@ -79,6 +80,7 @@ function loadSlider() {
                         eduData = getEducationSection();
                         certData = getCertificationSection();
                         //inject into text fields
+                        injectDataintoTextArea("name_title", basicProfileData.name);
                         injectDataintoTextArea("basicprofile", basicProfileData);
                         injectDataintoTextArea("experiencetext", expData);
                         injectDataintoTextArea("educationtext", eduData);
@@ -98,7 +100,9 @@ function loadSlider() {
                         basicProfileData = getBasicProfileSection();
                         expData = getExperienceSection();
                         eduData = getEducationSection();
+                        certData = getCertificationSection();
 
+                        injectDataintoTextArea("name_title", basicProfileData.name);
                         injectDataintoTextArea("basicprofile", basicProfileData);
                         injectDataintoTextArea("experiencetext", expData);
                         injectDataintoTextArea("educationtext", eduData);
@@ -437,13 +441,11 @@ function getCertificationData(results) {
 }
 
 
-
-
 // inject data into text boxes in the slider.html
 function injectDataintoTextArea(nodeId, data) {
     const textarea = document.getElementById(nodeId);
     if(!textarea) {
-        console.error('Text area node with id ${nodeId} not found.');
+        console.error(`Text area node with id ${nodeId} not found.`);
         return;
     }
 
