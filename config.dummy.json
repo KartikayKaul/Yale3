@@ -2,6 +2,5 @@
   "APP_NAME": "yale3-realm",
   "DB_NAME": "yale3_profiles",
   "COLLECTION_NAME": "profiles",
-  "MONGODB_URI": "mongodb+srv://youruser:yourpass@cluster.mongodb.net/",
-  "_comment": "Save this file as config.json with your actual details. The config.json file is set to gitignore as it contains sensitive data. redact _comment."
+  "MONGODB_URI": "mongodb+srv://youruser:yourpass@cluster.mongodb.net/"
 }

@@ -3,7 +3,7 @@
 CONFIG_FILE="config.json"
 
 if [ ! -f "$CONFIG_FILE" ]; then
-    echo " config.json not found!"
+    echo " config file not found!"
     exit 1
 fi
 
@@ -14,7 +14,7 @@ COLLECTION_NAME=$(node -p "require('./$CONFIG_FILE').COLLECTION_NAME")
 MONGODB_URI=$(node -p "require('./$CONFIG_FILE').MONGODB_URI")
 
 if [[ -z "$APP_NAME" || -z "$DB_NAME" || -z "$COLLECTION_NAME" || -z "$MONGODB_URI" ]]; then
-    echo " Missing one or more required fields in config.json"
+    echo " Missing one or more required fields in config file"
     exit 1
 fi
 
