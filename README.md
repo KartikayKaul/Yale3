@@ -25,7 +25,7 @@ Section Name       |      Can Extract?      | Clean?              | Deepscan Ext
 *experience section*|     :heavy_check_mark: | :x: |  :x:
 *education section*|     :heavy_check_mark: | :x: | :x:
 *certifications* |     :heavy_check_mark: | :x: | :x:
-*skills section*  |     :x: | :x: | :x:
+*skills section*  |     :heavy_check_mark: | :x: | :x:
 
 The data that is extracted is clean but some simple string methods can be used to split the text and get the relevant data. Below sample JSON object list will give an idea of what the output looks like:-
 ```json
