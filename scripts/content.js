@@ -101,8 +101,9 @@ function loadSlider() {
                         injectDataintoTextArea("educationtext", eduData);
                         injectDataintoTextArea("certificationstext", certData);
                         injectDataintoTextArea("skillstext", skillData);
-                        
-                        saveProfileData(basicProfileData, expData, eduData, certData, skillData);
+
+                        let select_method = document.querySelector("#save_option_select").value;
+                        saveProfileData(basicProfileData, expData, eduData, certData, skillData,select_method);
                     })
                 }
 
@@ -526,8 +527,7 @@ function injectDataintoTextArea(nodeId, data) {
 }
 
 // save profile data extracted so far
-function saveProfileData(basicData, expData, eduData, certData, skillData) {
-
+async function saveProfileData(basicData, expData, eduData, certData, skillData, saveMethod = "local") {
     const fullData = {
         id: window.location.href,
         savedDate: new Date().toISOString(),
@@ -539,13 +539,51 @@ function saveProfileData(basicData, expData, eduData, certData, skillData) {
     };
 
 
-    const name = basicData?.name?.replace(/\s+/g, "_") || window.location.href;
-    const date = new Date().getTime();
-    const filename =    `${name}_${date}.json`  ;
+    if (saveMethod === "local") {
+        // Local disk download
+        var name = basicData?.name?.replace(/[^a-zA-Z0-9]/g, "") || "profile";
+        var date = new Date().toISOString().replace(/[:.]/g, "-");
+        var filename = `${name}_${date}.json`;
+        chrome.runtime.sendMessage({
+            type: "downloadProfile",
+            filename,
+            content: JSON.stringify(fullData, null, 2)
+        });
 
-    chrome.runtime.sendMessage({
-        type: "downloadProfile",
-        filename,
-        content: JSON.stringify(fullData, null, 2)
-    });
+    } else if (saveMethod === "cloud") {
+         try {
+            // Read config.json from the extension's root
+            const config = await fetch(chrome.runtime.getURL("config.json")).then(res => res.json());
+            const endpoint = config.MONGO_API_ENDPOINT;
+
+            if (!endpoint) {
+                alert("MONGO_API_ENDPOINT missing in config.json");
+                return;
+            }
+
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(fullData)
+            });
+
+            if (!res.ok) {
+                const err = await res.text();
+                console.error("Error from API:", err);
+                alert(" Failed to save to MongoDB: " + err);
+                return;
+            }
+
+            const result = await res.json();
+            alert(" Profile saved to MongoDB Atlas!\nID: " + result.id);
+
+            } catch (err) {
+                console.error("saveProfileData cloud error:", err);
+                alert(" Failed to upload to cloud: " + err.message);
+        }
+    } else {
+        alert("Invalid save method: " + saveMethod);
+    }
 }
