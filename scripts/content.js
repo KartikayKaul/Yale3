@@ -45,7 +45,7 @@ function loadSlider() {
                 var eduData = getEducationSection();
                 //console.log(eduData);
                 var certData = getCertificationSection();
-
+                var skillData = getSkillsSection();
 
                 // INJECT INTO TEXT FIELDS
                 injectDataintoTextArea("name_title", basicProfileData.name);
@@ -53,7 +53,7 @@ function loadSlider() {
                 injectDataintoTextArea("experiencetext", expData);
                 injectDataintoTextArea("educationtext", eduData);
                 injectDataintoTextArea("certificationstext", certData);
-                
+                injectDataintoTextArea("skillstext", skillData);
 
                 // REFRESH PROFILE DATA
                 const refreshBtn = document.getElementById("refresh_profile_data_button");
@@ -71,17 +71,42 @@ function loadSlider() {
                         expData = getExperienceSection();
                         eduData = getEducationSection();
                         certData = getCertificationSection();
+                        skillData = getSkillsSection();
                         //inject into text fields
                         injectDataintoTextArea("name_title", basicProfileData.name);
                         injectDataintoTextArea("basicprofile", basicProfileData);
                         injectDataintoTextArea("experiencetext", expData);
                         injectDataintoTextArea("educationtext", eduData);
                         injectDataintoTextArea("certificationstext", certData);
+                        injectDataintoTextArea("skillstext", skillData);
                     });
                 }
                 // REFRESH PROFILE DATA ENDS //
 
-            }, 3000);//adjust delay here // TIMEOUT ENDS HERE //
+                 // SAVE PROFILE DATA LISTENER
+                var saveButton = document.getElementById("save_profile_data_button");
+                if(saveButton) {
+                    saveButton.addEventListener("click", () => {
+                        
+                        // existing refresh logic
+                        basicProfileData = getBasicProfileSection();
+                        expData = getExperienceSection();
+                        eduData = getEducationSection();
+                        certData = getCertificationSection();
+                        skillData = getSkillsSection();
+                        //inject into text fields
+                        injectDataintoTextArea("name_title", basicProfileData.name);
+                        injectDataintoTextArea("basicprofile", basicProfileData);
+                        injectDataintoTextArea("experiencetext", expData);
+                        injectDataintoTextArea("educationtext", eduData);
+                        injectDataintoTextArea("certificationstext", certData);
+                        injectDataintoTextArea("skillstext", skillData);
+                        
+                        saveProfileData(basicProfileData, expData, eduData, certData, skillData);
+                    })
+                }
+
+            }, 2000);//adjust delay here // TIMEOUT ENDS HERE //
 
 
             // AUTOMATIC DATA REFRESHER LOGIC //
@@ -93,24 +118,20 @@ function loadSlider() {
                         expData = getExperienceSection();
                         eduData = getEducationSection();
                         certData = getCertificationSection();
+                        skillData = getSkillsSection();
 
                         injectDataintoTextArea("name_title", basicProfileData.name);
                         injectDataintoTextArea("basicprofile", basicProfileData);
                         injectDataintoTextArea("experiencetext", expData);
                         injectDataintoTextArea("educationtext", eduData);
                         injectDataintoTextArea("certificationstext", certData);
+                        injectDataintoTextArea("skillstext", skillData);
                         lastUrl = location.href;
                     }, 1000); // Timeout set to let the page refresh first
                 }
             }, 500); // Interval - check every 1 second
             // AUTOMATIC DATA REFRESHER LOGIC ENDS //
-            // SAVE PROFILE DATA LISTENER
-                const saveButton = document.getElementById("save_profile_data_button");
-                if(saveButton) {
-                    saveButton.addEventListener("click", () => {
-                        saveProfileData(basicProfileData, expData, eduData, certData);
-                    })
-                }
+           
         // SLIDER WORK ENDS HERE  -------------- //
         }).catch(error => console.error("Error injecting slider.html: ", error));
 } // loadSlider function definition ends here
@@ -438,6 +459,58 @@ function getCertificationData(results) {
     return items;
 }
 
+// get skills SECTION
+function getSkillsSection() {
+const sections = getSectionsList();
+    const skillNode = getSectionWithId(sections, "skills");
+
+    if(skillNode) {//if certNode exists
+       const ul = skillNode.children[2]?.querySelector("ul") || null;
+        if(ul) {
+            allLi = Array.from(ul.querySelectorAll("li"));
+            topLi = allLi.filter(li => li.parentElement === ul); // getting all top level li
+
+            // we loop through topLi items and validate using selectors object
+            const validationResults = {};
+
+            topLi.forEach((li, index) => {
+                const key = `li_${index}`;
+                const validation = validateSelector(window.selectors.skills, li);
+                validationResults[key] = {
+                    node: li,
+                    result: validation
+                };
+            });
+            
+            return getSkillsData(validationResults);
+        } // if ul exists condn ends 
+        else {
+            return {}; //return empty object if ul is null
+        }
+    } // if eduNode exists condn ends 
+    else {
+        return {}; //return empty object if eduNode is null
+    }
+}
+
+// get skills Data
+function getSkillsData(results) {
+    const items = [];
+    for (const [key, {node, result}] of Object.entries(results)) {
+        // only process if all selectors are valid
+        const requiredFields = ['name'];
+        const allValid = requiredFields.every(field => result[field]);
+        if(!allValid) continue;
+
+        const data = {};
+        for (const [field, selector] of Object.entries(window.selectors.skills)) {
+            const el = node.querySelector(selector);
+            data[field] = el ? el.textContent.trim() : "";
+        }
+        items.push({key, data});
+    }
+    return items;
+}
 
 // inject data into text boxes in the slider.html
 function injectDataintoTextArea(nodeId, data) {
@@ -453,7 +526,7 @@ function injectDataintoTextArea(nodeId, data) {
 }
 
 // save profile data extracted so far
-function saveProfileData(basicData, expData, eduData, certData) {
+function saveProfileData(basicData, expData, eduData, certData, skillData) {
 
     const fullData = {
         id: window.location.href,
@@ -461,12 +534,13 @@ function saveProfileData(basicData, expData, eduData, certData) {
         basicProfile: basicData,
         experience: expData,
         education: eduData,
-        certification: certData
+        certification: certData,
+        skills: skillData
     };
 
 
     const name = basicData?.name?.replace(/\s+/g, "_") || window.location.href;
-    const date = new Date().toISOString().split("T")[0];
+    const date = new Date().getTime();
     const filename =    `${name}_${date}.json`  ;
 
     chrome.runtime.sendMessage({

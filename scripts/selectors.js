@@ -37,5 +37,10 @@ window.selectors = {
         validity_duration: ".t-black--light span",
         credential_id : ".t-black--light + .t-black--light span",
         credential_url: "div.pvs-entity__sub-components a", 
+    },
+    skills: {
+        name: 'a[data-field="skill_card_skill_topic"] span[aria-hidden="true"]',
+        endorsements: 'a[href*="/endorsers"] span[aria-hidden="true"]',
+        experience: 'div.pvs-entity__sub-components li span[aria-hidden="true"]'
     }
 };

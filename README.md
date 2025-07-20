@@ -4,7 +4,7 @@
 Yal§ or Yale3 (pronounced as Yal-crow) is a simplified version of [Rekrut](https://github.com/DrakenWan/Rekrut). Just enable developer mode in your `chrome://extensions` tab and click on `load unpacked` button and browse to the cloned folder. Run it on linkedin website profiles. Raw JSON profile data will be displayed on a sidebar that will appear when you click on the extension icon.
 
 
-Before clicking***saving profile data***, it's recommended to click "Refresh Profile Data" just to refresh data for good measure.
+Before clicking***saving profile data***, it's recommended to click "Refresh Profile Data" to refresh data for good measure.
 
  All update logs to the code/logic of the extension can be seen in the [Updates](#update-timeline) section.
 
