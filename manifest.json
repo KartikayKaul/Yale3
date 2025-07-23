@@ -1,12 +1,13 @@
 {
     "manifest_version": 3,
     "name": "Yal§",
-    "version": "2.2.0",
+    "version": "2.2.2",
     "description": "Simple LinkedIn Profile scraping extension",
     "icons": {
         "128": "Y.png"
     },
     "permissions": [
+        "scripting",
         "storage",
         "tabs",
         "identity",
@@ -33,7 +34,7 @@
         }
     ],
     "web_accessible_resources": [{
-        "resources": ["views/slider.html"],
+        "resources": ["scripts/modal_scraper.js","views/slider.html"],
         "matches": ["<all_urls>"]
     }],
 

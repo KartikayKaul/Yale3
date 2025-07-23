@@ -105,6 +105,92 @@ function loadSlider() {
                         saveProfileData(basicProfileData, expData, eduData, certData, skillData);
                     })
                 }
+                
+                /* deepscan feature work */
+                const sectionKeywordToIdMap = {
+                    "education": "educationtext",
+                    "experience": "experiencetext",
+                    "skills": "skillstext",
+                    "licenses & certifications": "certificationstext"
+                };
+
+                const sectionArrays = [
+                    ["show all", "licenses & certifications"],
+                    ["show all", "experience"],
+                    ["show all", "skills"],
+                    ["show all", "education"]
+                ];
+
+                const candidates = document.querySelectorAll(".pvs-list__footer-wrapper");
+                const filteredNodes = Array.from(candidates).filter(node => {
+                    const text = node.textContent.trim().toLowerCase();
+                    return sectionArrays.some(sectionArray =>
+                        sectionArray.every(keyword => text.includes(keyword))
+                    );
+                });
+
+                filteredNodes.forEach(node => {
+                    const text = node.textContent.trim().toLowerCase();
+                    const matchedSection = Object.keys(sectionKeywordToIdMap).find(section =>
+                        text.includes(section)
+                    );
+
+                    if (matchedSection) {
+                        const textareaId = sectionKeywordToIdMap[matchedSection];
+                        const textarea = document.getElementById(textareaId);
+
+                        if (textarea) {
+                            // Create checkbox
+                            const checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.id = `deepscan_enable_${matchedSection.replace(/\s/g, '_')}`;
+                            checkbox.style.marginTop = "5px";
+                            checkbox.style.marginRight = "6px";
+                            checkbox.style.color = "white";
+
+                            // Create label
+                            const label = document.createElement("label");
+                            label.htmlFor = checkbox.id;
+                            label.innerText = "Enable DeepScan";
+                            label.style.color = "white";
+
+                            // Create button
+                            const button = document.createElement("button");
+                            button.innerText = "DeepScan";
+                            button.style.marginLeft = "10px";
+                            button.style.padding = "4px 8px";
+                            button.style.fontSize = "14px";
+                            button.style.cursor = "pointer";
+                            button.className = "internal_button";
+
+                            // Attach button click logic
+                            button.addEventListener("click", () => {
+                                if (!checkbox.checked) {
+                                    alert("Enable DeepScan first.");
+                                    return;
+                                }
+
+                                const href = node.querySelector("a")?.href;
+                                if (href) {
+                                    chrome.runtime.sendMessage({
+                                        type: "triggerDeepScan",
+                                        section: matchedSection,
+                                        sectionHref: href
+                                    });
+                                } else {
+                                    alert("No modal href found.");
+                                }
+                            });
+
+                            // Wrap UI in container div
+                            const container = textarea.parentElement;
+                            container.appendChild(checkbox);
+                            container.appendChild(label);
+                            container.appendChild(button);
+                        }
+                    }
+                });
+                /* deepscan feature work  ENDS */
 
             }, 2000);//adjust delay here // TIMEOUT ENDS HERE //
 
@@ -128,10 +214,98 @@ function loadSlider() {
                         injectDataintoTextArea("skillstext", skillData);
                         lastUrl = location.href;
                     }, 1000); // Timeout set to let the page refresh first
+
+
+                    /* deepscan feature work */
+                const sectionKeywordToIdMap = {
+                    "education": "educationtext",
+                    "experience": "experiencetext",
+                    "skills": "skillstext",
+                    "licenses & certifications": "certificationstext"
+                };
+
+                const sectionArrays = [
+                    ["show all", "licenses & certifications"],
+                    ["show all", "experience"],
+                    ["show all", "skills"],
+                    ["show all", "education"]
+                ];
+
+                const candidates = document.querySelectorAll(".pvs-list__footer-wrapper");
+                const filteredNodes = Array.from(candidates).filter(node => {
+                    const text = node.textContent.trim().toLowerCase();
+                    return sectionArrays.some(sectionArray =>
+                        sectionArray.every(keyword => text.includes(keyword))
+                    );
+                });
+
+                filteredNodes.forEach(node => {
+                    const text = node.textContent.trim().toLowerCase();
+                    const matchedSection = Object.keys(sectionKeywordToIdMap).find(section =>
+                        text.includes(section)
+                    );
+
+                    if (matchedSection) {
+                        const textareaId = sectionKeywordToIdMap[matchedSection];
+                        const textarea = document.getElementById(textareaId);
+
+                        if (textarea) {
+                            // Create checkbox
+                            const checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.id = `deepscan_enable_${matchedSection.replace(/\s/g, '_')}`;
+                            checkbox.style.marginTop = "5px";
+                            checkbox.style.marginRight = "6px";
+                            checkbox.style.color = "white";
+
+                            // Create label
+                            const label = document.createElement("label");
+                            label.htmlFor = checkbox.id;
+                            label.innerText = "Enable DeepScan";
+                            label.style.color = "white";
+
+                            // Create button
+                            const button = document.createElement("button");
+                            button.innerText = "DeepScan";
+                            button.style.marginLeft = "10px";
+                            button.style.padding = "4px 8px";
+                            button.style.fontSize = "14px";
+                            button.style.cursor = "pointer";
+                            button.className = "internal_button";
+
+                            // Attach button click logic
+                            button.addEventListener("click", () => {
+                                if (!checkbox.checked) {
+                                    alert("Enable DeepScan first.");
+                                    return;
+                                }
+
+                                const href = node.querySelector("a")?.href;
+                                if (href) {
+                                    chrome.runtime.sendMessage({
+                                        type: "triggerDeepScan",
+                                        section: matchedSection,
+                                        sectionHref: href
+                                    });
+                                } else {
+                                    alert("No modal href found.");
+                                }
+                            });
+
+                            // Wrap UI in container div
+                            const container = textarea.parentElement;
+                            container.appendChild(checkbox);
+                            container.appendChild(label);
+                            container.appendChild(button);
+                        }
+                    }
+                });
+                /* deepscan feature work  ENDS */
                 }
             }, 500); // Interval - check every 1 second
             // AUTOMATIC DATA REFRESHER LOGIC ENDS //
-           
+
+
         // SLIDER WORK ENDS HERE  -------------- //
         }).catch(error => console.error("Error injecting slider.html: ", error));
 } // loadSlider function definition ends here
@@ -141,10 +315,29 @@ loadSlider();
 
 // TOGGLE SLIDER LISTENER
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
-    if(msg.todo == "toggle") {
+    if(msg.todo && msg.todo == "toggle") {
        toggleSlider(); 
     }
+
+    // deepscan feature
+    if (msg.type === "injectDeepscanData") {
+        const section = msg.section;
+        const content = msg.content;
+
+        const textareaId = {
+            "education": "educationtext",
+            "experience": "experiencetext",
+            "skills": "skillstext",
+            "certifications": "certificationstext"
+        }[section];
+
+        const textarea = document.getElementById(textareaId);
+        if (textarea) {
+            textarea.value = JSON.stringify(content, null, 2);
+        }
+    }
 });
+
 
 
 // CSS STYLE CHANGE LOGIC ON TOGGLE TRIGGER

@@ -32,4 +32,53 @@ chrome.runtime.onMessage.addListener( (msg, sender, sendResponse) => {
 
         return true;
     }
+
+    // NEW: Handle DeepScan trigger // deepscan feature
+    else if (msg.type === "triggerDeepScan") {
+        const { section, sectionHref } = msg;
+
+        // Open the modal link in a background tab
+        chrome.tabs.create({ url: sectionHref, active: false }, (tab) => {
+            const tabId = tab.id;
+
+            // Wait until the tab is fully loaded
+            const listener = (updatedTabId, changeInfo) => {
+                if (updatedTabId === tabId && changeInfo.status === "complete") {
+                    // Inject content script to scrape modal content
+                    chrome.scripting.executeScript({
+                        target: { tabId },
+                        files: ["scripts/modal_scraper.js"]
+                    });
+
+                    // Stop listening for tab updates
+                    chrome.tabs.onUpdated.removeListener(listener);
+                }
+            };
+
+            chrome.tabs.onUpdated.addListener(listener);
+
+            // Optional: timeout set for 10s to close tab after 10s
+            setTimeout(() => {
+                chrome.tabs.remove(tabId);
+            }, 10000);
+        });
+
+        return true;
+    }
+
+    // deepscan feature
+     if (msg.type === "deepscanResult") {
+        if (sender && sender.tab && sender.tab.openerTabId) {
+            // Send the data back to the original content.js
+            chrome.tabs.sendMessage(sender.tab.openerTabId, {
+                type: "injectDeepscanData",
+                section: msg.section,
+                content: msg.content
+            });
+        } else {
+            console.warn("Could not find openerTabId to send DeepScan result back.");
+        }
+    }
+
+
 });
