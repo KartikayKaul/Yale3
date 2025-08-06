@@ -84,9 +84,11 @@ function loadSlider() {
                 // REFRESH PROFILE DATA ENDS //
 
                  // SAVE PROFILE DATA LISTENER
-                var saveButton = document.getElementById("save_profile_data_button");
+                let saveButton = document.getElementById("save_profile_data_button");
                 if(saveButton) {
-                    saveButton.addEventListener("click", () => {
+                    const newButton = saveButton.cloneNode(true);
+                    saveButton.parentNode.replaceChild(newButton, saveButton);
+                    newButton.addEventListener("click", () => {
                         
                         // existing refresh logic
                         basicProfileData = getBasicProfileSection();
@@ -102,8 +104,8 @@ function loadSlider() {
                         injectDataintoTextArea("certificationstext", certData);
                         injectDataintoTextArea("skillstext", skillData);
 
-                        let select_method = document.querySelector("#save_option_select").value;
-                        saveProfileData(basicProfileData, expData, eduData, certData, skillData,select_method);
+                        // var select_method = document.querySelector("#save_option_select").value;
+                        saveProfileData(basicProfileData, expData, eduData, certData, skillData);
                     })
                 }
 
@@ -527,7 +529,7 @@ function injectDataintoTextArea(nodeId, data) {
 }
 
 // save profile data extracted so far
-async function saveProfileData(basicData, expData, eduData, certData, skillData, saveMethod = "local") {
+async function saveProfileData(basicData, expData, eduData, certData, skillData) {
     const fullData = {
         id: window.location.href,
         savedDate: new Date().toISOString(),
@@ -538,7 +540,7 @@ async function saveProfileData(basicData, expData, eduData, certData, skillData,
         skills: skillData
     };
 
-
+    var saveMethod = document.querySelector("#save_option_select").value;
     if (saveMethod === "local") {
         // Local disk download
         var name = basicData?.name?.replace(/[^a-zA-Z0-9]/g, "") || "profile";
@@ -549,7 +551,6 @@ async function saveProfileData(basicData, expData, eduData, certData, skillData,
             filename,
             content: JSON.stringify(fullData, null, 2)
         });
-
     } else if (saveMethod === "cloud") {
          try {
             // Read config.json from the extension's root
