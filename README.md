@@ -121,6 +121,10 @@ Note**: If the chrome extension hangs due to some error or bug, go to `chrome://
 ## Update Timeline
 
 I will keep posting timed updates here. In future will shift these somewhere else if I have time
+
+#### Update(dated: 1st January 2026)
+- I have merged `atlas_int` branch into the main branch. Resolved all conflicts. You can still run the repository without running deployment script for mongoDB atlas connection but calling cloud save option to dump profile data will lead to error message.
+
 #### Update(dated: 21st July 2025)
 - I have added logic to scrape skills section as well.
 - Fixed a few bugs
