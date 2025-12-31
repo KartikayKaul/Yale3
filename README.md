@@ -9,12 +9,10 @@ Before clicking***saving profile data***, it's recommended to click "Refresh Pro
 
  All update logs to the code/logic of the extension can be seen in the [Updates](#update-timeline) section.
 
-
 You are free to do anything with the code on the repo. Read the [license](https://github.com/DrakenWan/Yale3/blob/main/LICENSE)
 
-## What is Deepscan?
-
-Deepscan feature is disabled for now. Working on improving this feature.
+## Atlast Integration – Cloud Saving to MongoDB Atlas
+The [`atlas_int`](https://github.com/KartikayKaul/Yale3/tree/atlas_int) branch adds support for saving extracted LinkedIn profile data directly to a MongoDB Atlas cloud database using a Vercel-hosted serverless API. It includes a deployment script ([deploy_vercel_function.sh](https://github.com/KartikayKaul/Yale3/blob/atlas_int/deploy_vercel_function.sh) that configures the serverless function, securely connects to MongoDB Atlas using credentials from the local config.json, and updates the extension to support a Save Option dropdown (Local or Cloud). Ideal for users who want persistent, centralized storage of profile data. Full setup guide available in the [wiki](https://github.com/KartikayKaul/Yale3/wiki/MongoDB-Atlas-Integration-Guide).
 
 ## Extraction
 
@@ -123,6 +121,11 @@ Note**: If the chrome extension hangs due to some error or bug, go to `chrome://
 ## Update Timeline
 
 I will keep posting timed updates here. In future will shift these somewhere else if I have time
+#### Update(dated: 21st July 2025)
+- I have added logic to scrape skills section as well.
+- Fixed a few bugs
+- Added `atlas_int` branch that allows for integrating the mongoDB atlas connection to save data in atlas cloud db cluster ( the free tier )
+
 #### Update(dated: 16th July 2025)
 - Added logic to extract the certifications section
 - fixed a bug in last commit on saveProfileAPI
