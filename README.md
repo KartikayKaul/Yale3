@@ -1,3 +1,4 @@
+
 # Yale3
  Updated and simplified version of Rekrut (Linkedin scraper for extracting profile data)
 
@@ -87,11 +88,36 @@ The data that is extracted is clean but some simple string methods can be used t
 
 This is the list of experiences scraped from my own linkedin profile page. You can clearly see that on some attributes we can perform splits using separators like `·`.
 
+## MongoDB Atlas Integration (`atlas_int` branch)
+
+This branch introduces a new feature: **saving extracted LinkedIn profile data to the cloud** using MongoDB Atlas. The integration is powered by a Vercel serverless function. The setup steps for this atlas integration is given in [wiki](https://github.com/KartikayKaul/Yale3/wiki/).
+
+### Key Features
+- Send extracted profile data from the Chrome extension to a **MongoDB Atlas database**.
+- Uses a Vercel serverless endpoint (`/api/save`) to receive and store data securely.
+- No local backend needed — the cloud function does all the work.
+
+### Updated Project Structure
+- `vercel/` folder created dynamically via shell script.
+- `config.json` updated with `MONGO_API_ENDPOINT`.
+
+### How to Use
+1. Ensure you’ve created a MongoDB Atlas cluster.
+2. Sign up at [vercel.com](https://vercel.com) and link your GitHub account (or any account you have).
+3. Run the provided `deploy_vercel_function.sh` script to:
+   - Generate the serverless function.
+   - Deploy it to Vercel.
+   - Automatically update `config.json` with your API endpoint.
+4. Choose `save to MongoDB` in your Chrome extension UI.
+5. Data will be POSTed to your MongoDB Atlas cluster in real-time.
+
 
 ## Bug reporting
 I strive to make the code as general as possible but the extractor tool may not be perfect. If you find any bug on any profile please let me know in [issues](https://github.com/DrakenWan/Yale3/issues) section.
 
 Note**: If the chrome extension hangs due to some error or bug, go to `chrome://extensions` and `update` the `Yale3` extension and referh to a new linkedin profile. THis will resolve the issue. If possible you can screenshot the error you find in the `chrome://extensions` page and report it in the issue section.
+
+
 ## Update Timeline
 
 I will keep posting timed updates here. In future will shift these somewhere else if I have time
@@ -172,4 +198,3 @@ I am going to start working on adding a few extensible features and I am going t
 #### Update (dated: 9th January, 2022)
 
 LinkedIn has made drastic changes to the way profile data is loaded. I have been quite busy with work lately. Not all sections can be extracted due to major document tag changes as well as the way the profile now interacts with user actions. Clicking on  'Show More *' buttons takes you away to an entirely different document. I will try to amend this asap.
-

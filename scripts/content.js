@@ -84,9 +84,11 @@ function loadSlider() {
                 // REFRESH PROFILE DATA ENDS //
 
                  // SAVE PROFILE DATA LISTENER
-                var saveButton = document.getElementById("save_profile_data_button");
+                let saveButton = document.getElementById("save_profile_data_button");
                 if(saveButton) {
-                    saveButton.addEventListener("click", () => {
+                    const newButton = saveButton.cloneNode(true);
+                    saveButton.parentNode.replaceChild(newButton, saveButton);
+                    newButton.addEventListener("click", () => {
                         
                         // existing refresh logic
                         basicProfileData = getBasicProfileSection();
@@ -101,7 +103,8 @@ function loadSlider() {
                         injectDataintoTextArea("educationtext", eduData);
                         injectDataintoTextArea("certificationstext", certData);
                         injectDataintoTextArea("skillstext", skillData);
-                        
+
+                        // var select_method = document.querySelector("#save_option_select").value;
                         saveProfileData(basicProfileData, expData, eduData, certData, skillData);
                     })
                 }
@@ -526,8 +529,7 @@ function injectDataintoTextArea(nodeId, data) {
 }
 
 // save profile data extracted so far
-function saveProfileData(basicData, expData, eduData, certData, skillData) {
-
+async function saveProfileData(basicData, expData, eduData, certData, skillData) {
     const fullData = {
         id: window.location.href,
         savedDate: new Date().toISOString(),
@@ -538,14 +540,51 @@ function saveProfileData(basicData, expData, eduData, certData, skillData) {
         skills: skillData
     };
 
+    var saveMethod = document.querySelector("#save_option_select").value;
+    if (saveMethod === "local") {
+        // Local disk download
+        var name = basicData?.name?.replace(/[^a-zA-Z0-9]/g, "") || "profile";
+        var date = new Date().toISOString().replace(/[:.]/g, "-");
+        var filename = `${name}_${date}.json`;
+        chrome.runtime.sendMessage({
+            type: "downloadProfile",
+            filename,
+            content: JSON.stringify(fullData, null, 2)
+        });
+    } else if (saveMethod === "cloud") {
+         try {
+            // Read config.json from the extension's root
+            const config = await fetch(chrome.runtime.getURL("config.json")).then(res => res.json());
+            const endpoint = config.MONGO_API_ENDPOINT;
 
-    const name = basicData?.name?.replace(/\s+/g, "_") || window.location.href;
-    const date = new Date().getTime();
-    const filename =    `${name}_${date}.json`  ;
+            if (!endpoint) {
+                alert("MONGO_API_ENDPOINT missing in config.json");
+                return;
+            }
 
-    chrome.runtime.sendMessage({
-        type: "downloadProfile",
-        filename,
-        content: JSON.stringify(fullData, null, 2)
-    });
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(fullData)
+            });
+
+            if (!res.ok) {
+                const err = await res.text();
+                console.error("Error from API:", err);
+                alert(" Failed to save to MongoDB: " + err);
+                return;
+            }
+
+            const result = await res.json();
+            alert(" Profile saved to MongoDB Atlas!\nID: " + result.id);
+
+            } catch (err) {
+                console.error("saveProfileData cloud error:", err);
+                alert(" Failed to upload to cloud: " + err.message);
+        }
+    } else {
+        alert("Invalid save method: " + saveMethod);
+    }
 }

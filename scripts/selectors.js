@@ -41,6 +41,6 @@ window.selectors = {
     skills: {
         name: 'a[data-field="skill_card_skill_topic"] span[aria-hidden="true"]',
         endorsements: 'a[href*="/endorsers"] span[aria-hidden="true"]',
-        experience: 'div.pvs-entity__sub-components li span[aria-hidden="true"]'
+        experience: 'div.pvs-entity__sub-components li span[aria-hidden="true"] + li span[aria-hidden="true"]'
     }
 };

@@ -52,7 +52,15 @@
             <path d="M12 4V1L8 5l4 4V6c3.309 0 6 2.691 6 6 0 1.197-.354 2.311-.959 3.234l1.518 1.312C19.352 15.045 20 13.584 20 12c0-4.418-3.582-8-8-8zm-6 6c0-1.197.354-2.311.959-3.234L5.441 5.454C4.648 6.955 4 8.416 4 10c0 4.418 3.582 8 8 8v3l4-4-4-4v3c-3.309 0-6-2.691-6-6z"/>
         </svg> Refresh Profile Data
     </div>
-    <div class="internal_button" id="save_profile_data_button">Save Profile Data</div>
+
+    <div id="save_controls_container">
+        <select id="save_option_select" class="internal_button internal_select">
+            <option value="local" selected> Local</option>
+            <option value="cloud">Atlas Cloud</option>
+        </select>
+        <div class="internal_button" id="save_profile_data_button">Save Profile Data</div>
+    </div>
+    <!-- <div class="internal_button" id="DeepScan">DeepScan ⇨</div> -->
 </div>
 
 <!-- Link to stylesheet -->

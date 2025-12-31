@@ -1,0 +1,6 @@
+{
+  "APP_NAME": "yale3-realm",
+  "DB_NAME": "yale3_profiles",
+  "COLLECTION_NAME": "profiles",
+  "MONGODB_URI": "mongodb+srv://youruser:yourpass@cluster.mongodb.net/"
+}
