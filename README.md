@@ -11,8 +11,8 @@ Before clicking***saving profile data***, it's recommended to click "Refresh Pro
 
 You are free to do anything with the code on the repo. Read the [license](https://github.com/DrakenWan/Yale3/blob/main/LICENSE)
 
-## Atlast Integration – Cloud Saving to MongoDB Atlas
-The [`atlas_int`](https://github.com/KartikayKaul/Yale3/tree/atlas_int) branch adds support for saving extracted LinkedIn profile data directly to a MongoDB Atlas cloud database using a Vercel-hosted serverless API. It includes a deployment script ([deploy_vercel_function.sh](https://github.com/KartikayKaul/Yale3/blob/atlas_int/deploy_vercel_function.sh) that configures the serverless function, securely connects to MongoDB Atlas using credentials from the local config.json, and updates the extension to support a Save Option dropdown (Local or Cloud). Ideal for users who want persistent, centralized storage of profile data. Full setup guide available in the [wiki](https://github.com/KartikayKaul/Yale3/wiki/MongoDB-Atlas-Integration-Guide).
+## Atlas Integration – Cloud Saving to MongoDB Atlas
+Added support for saving extracted LinkedIn profile data directly to a MongoDB Atlas cloud database using a Vercel-hosted serverless API. It includes a deployment script ([deploy_vercel_function.sh](https://github.com/KartikayKaul/Yale3/blob/atlas_int/deploy_vercel_function.sh) that configures the serverless function, securely connects to MongoDB Atlas using credentials from the local config.json, and updates the extension to support a Save Option dropdown (Local or Cloud). Ideal for users who want persistent, centralized storage of profile data. Full setup guide available in the [wiki](https://github.com/KartikayKaul/Yale3/wiki/MongoDB-Atlas-Integration-Guide).
 
 ## Extraction
 
@@ -87,10 +87,6 @@ The data that is extracted is clean but some simple string methods can be used t
 ```
 
 This is the list of experiences scraped from my own linkedin profile page. You can clearly see that on some attributes we can perform splits using separators like `·`.
-
-## MongoDB Atlas Integration (`atlas_int` branch)
-
-This branch introduces a new feature: **saving extracted LinkedIn profile data to the cloud** using MongoDB Atlas. The integration is powered by a Vercel serverless function. The setup steps for this atlas integration is given in [wiki](https://github.com/KartikayKaul/Yale3/wiki/).
 
 ### Key Features
 - Send extracted profile data from the Chrome extension to a **MongoDB Atlas database**.
