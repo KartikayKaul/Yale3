@@ -14,6 +14,25 @@ You are free to do anything with the code on the repo. Read the [license](https:
 ## Atlas Integration – Cloud Saving to MongoDB Atlas
 Added support for saving extracted LinkedIn profile data directly to a MongoDB Atlas cloud database using a Vercel-hosted serverless API. It includes a deployment script ([deploy_vercel_function.sh](https://github.com/KartikayKaul/Yale3/blob/atlas_int/deploy_vercel_function.sh) that configures the serverless function, securely connects to MongoDB Atlas using credentials from the local config.json, and updates the extension to support a Save Option dropdown (Local or Cloud). Ideal for users who want persistent, centralized storage of profile data. Full setup guide available in the [wiki](https://github.com/KartikayKaul/Yale3/wiki/MongoDB-Atlas-Integration-Guide).
 
+### Key Features
+- Send extracted profile data from the Chrome extension to a **MongoDB Atlas database**.
+- Uses a Vercel serverless endpoint (`/api/save`) to receive and store data securely.
+- No local backend needed — the cloud function does all the work.
+
+### Updated Project Structure
+- `vercel/` folder created dynamically via shell script.
+- `config.json` updated with `MONGO_API_ENDPOINT`.
+
+### How to Use
+1. Ensure you’ve created a MongoDB Atlas cluster.
+2. Sign up at [vercel.com](https://vercel.com) and link your GitHub account (or any account you have).
+3. Run the provided `deploy_vercel_function.sh` script to:
+   - Generate the serverless function.
+   - Deploy it to Vercel.
+   - Automatically update `config.json` with your API endpoint.
+4. Choose `save to MongoDB` in your Chrome extension UI.
+5. Data will be POSTed to your MongoDB Atlas cluster in real-time.
+
 ## Extraction
 
 Below table shows what can be extracted and if the data is clean.
@@ -87,26 +106,6 @@ The data that is extracted is clean but some simple string methods can be used t
 ```
 
 This is the list of experiences scraped from my own linkedin profile page. You can clearly see that on some attributes we can perform splits using separators like `·`.
-
-### Key Features
-- Send extracted profile data from the Chrome extension to a **MongoDB Atlas database**.
-- Uses a Vercel serverless endpoint (`/api/save`) to receive and store data securely.
-- No local backend needed — the cloud function does all the work.
-
-### Updated Project Structure
-- `vercel/` folder created dynamically via shell script.
-- `config.json` updated with `MONGO_API_ENDPOINT`.
-
-### How to Use
-1. Ensure you’ve created a MongoDB Atlas cluster.
-2. Sign up at [vercel.com](https://vercel.com) and link your GitHub account (or any account you have).
-3. Run the provided `deploy_vercel_function.sh` script to:
-   - Generate the serverless function.
-   - Deploy it to Vercel.
-   - Automatically update `config.json` with your API endpoint.
-4. Choose `save to MongoDB` in your Chrome extension UI.
-5. Data will be POSTed to your MongoDB Atlas cluster in real-time.
-
 
 ## Bug reporting
 I strive to make the code as general as possible but the extractor tool may not be perfect. If you find any bug on any profile please let me know in [issues](https://github.com/DrakenWan/Yale3/issues) section.
