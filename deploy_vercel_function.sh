@@ -22,17 +22,15 @@ echo " Creating function directory..."
 mkdir -p vercel/$APP_NAME/api
 cd vercel/$APP_NAME || exit 1
 
-echo " Writing api/save.js with CORS support..."
+echo " Writing api/save.js with modern MongoDB syntax..."
 cat <<EOF > api/save.js
 import { MongoClient } from 'mongodb';
 
-const client = new MongoClient(process.env.MONGODB_URI, {
-  tls: true,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+// Remove deprecated options: useNewUrlParser and useUnifiedTopology
+const client = new MongoClient(process.env.MONGODB_URI);
 
 export default async function handler(req, res) {
+  // Essential CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -42,7 +40,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).send("Only POST allowed");
+    return res.status(405).json({ error: "Only POST allowed" });
   }
 
   try {
@@ -51,10 +49,12 @@ export default async function handler(req, res) {
     const result = await db.collection(process.env.COLLECTION_NAME).insertOne(req.body);
     res.status(200).json({ id: result.insertedId });
   } catch (err) {
+    console.error("Database error:", err);
     res.status(500).json({ error: err.message });
   }
 }
 EOF
+
 
 echo " Creating .env file for Vercel local dev..."
 cat <<EOF > .env
@@ -65,10 +65,21 @@ EOF
 
 echo ".env" > .gitignore
 
-echo " Creating vercel.json..."
+echo " Creating vercel.json with global CORS headers..."
 cat <<EOF > vercel.json
 {
   "version": 2,
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
+      ]
+    }
+  ],
   "env": {
     "MONGODB_URI": "@MONGODB_URI",
     "DB_NAME": "@DB_NAME",
@@ -76,6 +87,7 @@ cat <<EOF > vercel.json
   }
 }
 EOF
+
 
 echo " Initializing Node.js project..."
 npm init -y > /dev/null
